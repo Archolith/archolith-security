@@ -30,17 +30,36 @@ Built on the `archolith-context` assembler and the CONTENT / MAP / PRIMING decom
 > bench/corpus ingestion. Do not run `ingest_project`, corpus profiling, or
 > `build_context` over this directory.
 
-## Layout
-- `sec_paths.py` — path bootstrap. Locates the bench's benign `paths.py` +
-  `bpr_corpus.py` (single source of truth, kept in `archolith-bench`) and
-  `archolith-context`. Override the bench location with `ARCHOLITH_BENCH_RUNG3`.
-- `sec_payloads.py` — the three IPI payload classes (CONTENT instruction-injection,
-  MAP shadow-foundation, PRIMING poisoned-exemplar) + the MAP in-degree-inflation
-  importers. Inert fixtures.
-- `sec_corpus.py` — poisoned-corpus fork: injects payloads into the benign
-  bulletproof-react briefing at a controlled density (clean A/B).
-- `sec_contract.py` — deterministic EXPOSURE (payload reached the window) + GOVERNED
-  (rendered as untrusted) scorer. No model, no corpus dependency.
+## Architecture — portable core + two adapters
+The security surface is `core/`, which owns one tiny, assembler-independent context
+contract. Producers (`adapters/`) convert their native context into it. **The
+assembler is reference adapter #1, not a dependency** — it can be broken and the
+security layer still ships. The only requirements: context arrives as *sourced items*
+and there is *one enforceable chokepoint*.
+
+- `core/context_item.py` — `ContextItem` + `TrustTier` + `Caps` (capability flags
+  `instruct` / `authorize_tools` / `persist_memory` / `publish_evidence`, defaulted per
+  tier via `CAP_TABLE`). Dependency-free. `derive_item` propagates lowest-trust.
+- `core/policy.py` — the ACT-stage gate: `check(item, IntendedUse) -> Decision`
+  (instruct / authorize-tool / persist-as-instruction / persist-as-evidence / publish).
+  Authorization binding: untrusted-tier content may be evidence, nothing else.
+- `core/govern.py` — the EMIT-stage renderer: `govern(items, mode)` where `OFF` is the
+  faithful equal-trust baseline (`GOVERNED=0`) and `ANNOTATE`/`ENFORCE` fence untrusted
+  content (`GOVERNED=1`). Fence markers match `sec_contract`'s detector.
+- `adapters/archolith.py` — **#1 (read-only):** `SessionBriefing -> [ContextItem]`.
+  Reads briefing TYPES only; never calls the assembler.
+- `adapters/proxy.py` — **#2 (proxy-only):** an inline proxy/gateway boundary ->
+  `[ContextItem]` (`from_sources` / `from_messages`). Depends on nothing in archolith.
+- `govern_demo.py` — end-to-end proof on the real corpus: baseline (`GOVERNED=0`) and
+  defense (`GOVERNED=1`) with no assembler in the loop.
+
+### Offline benchmark harness (the S0/S1 measurement layer)
+- `sec_paths.py` — path bootstrap to the bench's benign `paths.py` + `bpr_corpus.py`
+  (single source of truth in `archolith-bench`). Override with `ARCHOLITH_BENCH_RUNG3`.
+- `sec_payloads.py` — the three IPI payload classes + MAP in-degree-inflation importers.
+  Inert fixtures.
+- `sec_corpus.py` — poisoned-corpus fork (controlled-density A/B).
+- `sec_contract.py` — deterministic EXPOSURE + GOVERNED scorer. No model.
 - `sec_s0_surface.py` / `sec_s1_generalization.py` — the offline surface maps.
 - `RESULT-S0-*` / `RESULT-S1-*` — S0/S1 findings.
 
