@@ -12,10 +12,19 @@ from .context_item import (
     derive_item,
 )
 from .govern import GovernMode, GovernResult, govern
+from .grounding import GroundedLine, ground, grounding_summary
+from .lineage import Lineage, lineage
+from .manifest import Attribution, attribute, manifest, manifest_bytes
 from .policy import Decision, IntendedUse, check, check_all, denials
+from .staleness import Staleness, check_staleness, stale_refs
 
 __all__ = [
     "CAP_TABLE", "Caps", "ContextItem", "TrustTier", "derive_item",
     "GovernMode", "GovernResult", "govern",
     "Decision", "IntendedUse", "check", "check_all", "denials",
+    # provenance consumers
+    "Attribution", "attribute", "manifest", "manifest_bytes",
+    "Staleness", "check_staleness", "stale_refs",
+    "Lineage", "lineage",
+    "GroundedLine", "ground", "grounding_summary",
 ]
