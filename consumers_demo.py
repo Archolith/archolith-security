@@ -16,9 +16,8 @@ import sec_paths  # noqa: E402,F401
 
 from core import (  # noqa: E402
     GroundedLine, check_staleness, derive_item, ground, grounding_summary,
-    lineage, stale_refs,
+    guard_freshness, lineage, stale_refs,
 )
-from core.staleness import sha256  # noqa: E402
 from adapters.archolith import from_session_briefing  # noqa: E402
 from sec_corpus import build_poisoned_briefing  # noqa: E402
 
@@ -42,7 +41,12 @@ def main() -> int:
     for s in res:
         counts[s.status] = counts.get(s.status, 0) + 1
     print(f"  {counts}  -> stale/missing: {stale_refs(res)}")
-    print(f"  (only {edited} changed upstream; the rest verified fresh by hash)\n")
+    print(f"  (only {edited} changed upstream; the rest verified fresh by hash)")
+
+    # FRESHNESS GUARD: drop the drifted item before assembly (closes the map-drift loop).
+    kept, report = guard_freshness(items, lambda it: live.get(it.source_ref), mode="drop")
+    print(f"  guard(drop): kept {report.kept}/{len(items)}, dropped {report.dropped} "
+          f"-> a half-stale source never enters the window\n")
 
     # --- 2. LINEAGE: a stored fact's pedigree + what it may do --------------------
     print("== LINEAGE (a derived fact's pedigree + permissions) ==")

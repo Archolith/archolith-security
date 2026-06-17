@@ -16,7 +16,13 @@ from .grounding import GroundedLine, ground, grounding_summary
 from .lineage import Lineage, lineage
 from .manifest import Attribution, attribute, manifest, manifest_bytes
 from .policy import Decision, IntendedUse, check, check_all, denials
-from .staleness import Staleness, check_staleness, stale_refs
+from .staleness import (
+    GuardReport,
+    Staleness,
+    check_staleness,
+    guard_freshness,
+    stale_refs,
+)
 
 __all__ = [
     "CAP_TABLE", "Caps", "ContextItem", "TrustTier", "derive_item",
@@ -24,7 +30,7 @@ __all__ = [
     "Decision", "IntendedUse", "check", "check_all", "denials",
     # provenance consumers
     "Attribution", "attribute", "manifest", "manifest_bytes",
-    "Staleness", "check_staleness", "stale_refs",
+    "Staleness", "check_staleness", "stale_refs", "guard_freshness", "GuardReport",
     "Lineage", "lineage",
     "GroundedLine", "ground", "grounding_summary",
 ]

@@ -42,13 +42,24 @@ def _file_content(f: PreFetchedFile) -> str:
     return f.outline or ""
 
 
-def from_session_briefing(briefing: SessionBriefing) -> list[ContextItem]:
-    """Convert a SessionBriefing into portable ContextItems (read-only)."""
+def from_session_briefing(briefing: SessionBriefing, *,
+                          goal_verbatim: bool = True) -> list[ContextItem]:
+    """Convert a SessionBriefing into portable ContextItems (read-only).
+
+    HARDENING (capture integrity): the `session_goal` is the only pool that maps to an
+    instruct-capable tier. If the goal is a MODEL SUMMARY (it can absorb injected content
+    from prior turns), it must NOT be `trusted_user_goal`. Pass `goal_verbatim=False` when
+    the goal is summarized/derived -> it is captured as `derived_session_state` (fenced,
+    non-instruction). Default True preserves the common case where the goal is the user's
+    own stated instruction. This closes the goal-summary-poisoning bypass.
+    """
     items: list[ContextItem] = []
 
     for attr, tier in _POOL_TIERS.items():
         text = getattr(briefing, attr, "") or ""
         if text.strip():
+            if attr == "session_goal" and not goal_verbatim:
+                tier = TrustTier.DERIVED_SESSION_STATE
             items.append(ContextItem(
                 content=text, source_type=f"briefing.{attr}", source_ref=attr,
                 trust_tier=tier, source_turn=briefing.source_turn))
