@@ -65,9 +65,21 @@ exactly the non-bypass items.)
   transport — exactly what `adapters/` exist to do — and the adapter is where the next
   hardening goes, not the renderer.
 
+## Hardening — DONE (`2452165`): all three bypasses closed, safe-by-default
+The three classes are now closed at the boundary, and `sec_tier_spoof.py` (default mode)
+reports **0 bypasses**; `--permissive` reproduces the original 4.
+1. `proxy.from_sources(authenticated_refs=...)` — a self-declared `source_type` can no
+   longer promote into an instruct-capable tier; a forged `user_message` is demoted to
+   untrusted unless its ref was authenticated by the proxy (default: none).
+2. `proxy.from_messages(trust_roles=False default, untrusted_hashes=...)` — user/system
+   roles are non-instruct unless `trust_roles` is explicitly asserted; content the proxy
+   knows it retrieved is forced untrusted even then (kills RAG-stuffing).
+3. `archolith.from_session_briefing(goal_verbatim=...)` — a model-summarized goal
+   (`goal_verbatim=False`) is captured as `derived_session_state`, not trusted.
+
+`tests/test_capture_integrity.py` (10 tests) regression-guards all of it; the existing
+demos are unaffected (verbatim goals stay trusted by default).
+
 ## Next
-- **Harden the adapters** against the three classes: (1) transport-derived `source_type` in
-  the proxy (drop self-declared labels), (2) a guard that refuses to tier retrieved/tool
-  content as user/system, (3) a `goal_is_summarized` flag that demotes the goal tier. Each is
-  a small, testable boundary change.
-- Add these as a permanent `tests/` suite so capture integrity is regression-guarded.
+- Wire `authenticated_refs` / `untrusted_hashes` from a real proxy's transport metadata
+  (the production capture path).
