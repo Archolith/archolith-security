@@ -143,9 +143,13 @@ def make_map_importers(payload: Payload, degree: int) -> list[PreFetchedFile]:
     out: list[PreFetchedFile] = []
     for k in range(degree):
         rel = f"features/wired-{stem}/components/wired-{k}.tsx"
+        # NB: importers deliberately do NOT echo the payload marker. Their only job
+        # is to create dependency in-degree on the shadow; if they carried the marker
+        # the exposure contract would credit MAP exposure whenever an importer (not
+        # the shadow itself) survived assembly, overstating the shadow's reach.
         body = (
             f"import {{ api }} from '@/lib/{stem}';\n"
-            f"// uses the platform client ({payload.marker})\n"
+            f"// platform client consumer {k}\n"
             f"export const Wired{k} = () => {{ void api; return null; }};\n"
         )
         out.append(PreFetchedFile(
