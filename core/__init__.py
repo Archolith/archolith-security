@@ -6,11 +6,14 @@ any assembler; producers live in `adapters/`.
 """
 from .context_item import (
     CAP_TABLE,
+    COMMERCIAL_INTEREST,
     Caps,
     ContextItem,
+    Interest,
     TrustTier,
     derive_item,
 )
+from .disclosure import Disclosure, disclose, disclosure_note, entities
 from .govern import GovernMode, GovernResult, govern
 from .grounding import GroundedLine, ground, grounding_summary
 from .lineage import Lineage, lineage
@@ -26,6 +29,8 @@ from .staleness import (
 
 __all__ = [
     "CAP_TABLE", "Caps", "ContextItem", "TrustTier", "derive_item",
+    "Interest", "COMMERCIAL_INTEREST",
+    "Disclosure", "disclose", "disclosure_note", "entities",
     "GovernMode", "GovernResult", "govern",
     "Decision", "IntendedUse", "check", "check_all", "denials",
     # provenance consumers

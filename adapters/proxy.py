@@ -25,7 +25,7 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root for `core`
-from core.context_item import CAP_TABLE, ContextItem, TrustTier  # noqa: E402
+from core.context_item import CAP_TABLE, ContextItem, Interest, TrustTier  # noqa: E402
 
 # How a proxy labels a captured source -> trust tier.
 _SOURCE_TIERS: dict[str, TrustTier] = {
@@ -71,8 +71,15 @@ def from_sources(records: Iterable[Mapping[str, object]], *,
         tier = _SOURCE_TIERS.get(stype, _DEFAULT_TIER)
         if tier in _INSTRUCT_TIERS and ref not in authenticated_refs:
             tier = _DEFAULT_TIER  # self-declared trust is not trust
+        # interest is captured from the source channel (e.g. a known ad/vendor domain);
+        # orthogonal to trust. Defaults organic when the channel carries no commercial mark.
+        try:
+            interest = Interest(str(r["interest"])) if r.get("interest") else Interest.ORGANIC
+        except ValueError:
+            interest = Interest.ORGANIC
         items.append(ContextItem(
             content=content, source_type=stype, source_ref=ref, trust_tier=tier,
+            interest=interest,
             source_turn=r.get("source_turn") if isinstance(r.get("source_turn"), int) else None,
             source_commit=str(r["source_commit"]) if r.get("source_commit") else None,
         ))

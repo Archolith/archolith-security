@@ -32,6 +32,26 @@ class TrustTier(str, Enum):
     UNTRUSTED_RETRIEVED_CODE = "untrusted_retrieved_code"  # files/snippets pulled from a repo/web
 
 
+class Interest(str, Enum):
+    """The source's COMMERCIAL interest — orthogonal to trust.
+
+    Trust answers "may this give orders?"; interest answers "does this source have a
+    stake in what gets surfaced?". A source can be untrusted AND sponsored, or trusted
+    AND organic. Captured from the source CHANNEL (you can't tell a native ad from its
+    text, but you know a vendor's own docs are vendor-interested). Used by the disclosure
+    consumer to surface commercially-influenced recommendations, not to block them.
+    """
+    FIRST_PARTY = "first_party"   # the user's own project/materials
+    ORGANIC = "organic"           # earned its place; no known commercial stake
+    VENDOR = "vendor"             # a vendor's own materials (self-interested)
+    SPONSORED = "sponsored"       # paid placement
+    UNKNOWN = "unknown"
+
+
+# Interests that have a commercial stake in being surfaced -> disclosure-worthy.
+COMMERCIAL_INTEREST = frozenset({Interest.VENDOR, Interest.SPONSORED})
+
+
 @dataclass(frozen=True)
 class Caps:
     """What a piece of context is permitted to do."""
@@ -67,6 +87,7 @@ class ContextItem:
     derived_from: list[str] = field(default_factory=list)
     content_sha256: str | None = None
     caps: Caps | None = None               # None => filled from CAP_TABLE[trust_tier]
+    interest: Interest = Interest.ORGANIC  # commercial stake of the source (see Interest)
 
     def __post_init__(self) -> None:
         if self.caps is None:
