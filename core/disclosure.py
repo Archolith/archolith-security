@@ -30,7 +30,7 @@ _STOP = frozenset({
     "For", "And", "But", "You", "Your", "Yours", "They", "There", "Here", "When",
     "While", "With", "Add", "Note", "See", "New", "Then", "Now", "Switch", "Best",
     "Today", "Recommend", "Recommended", "Sponsored", "Our", "Get", "Just", "Most",
-    "Some", "Each", "Every", "Also", "Highly", "Dont",
+    "Some", "Each", "Every", "Also", "Highly", "Dont", "Topic", "Reference", "Section",
 })
 
 

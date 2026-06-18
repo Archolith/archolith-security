@@ -15,6 +15,7 @@ from .context_item import (
 )
 from .disclosure import Disclosure, disclose, disclosure_note, entities
 from .govern import GovernMode, GovernResult, govern
+from .influence import InfluenceReport, assess_influence
 from .memory_firewall import MemoryGrade, WriteDecision, check_memory_write
 from .pumping import Pumping, detect_pumping
 from .toolcall import ToolCall, ToolClass, ToolDecision, check_tool_call, classify_tool
@@ -35,6 +36,7 @@ __all__ = [
     "Interest", "COMMERCIAL_INTEREST",
     "Disclosure", "disclose", "disclosure_note", "entities",
     "Pumping", "detect_pumping",
+    "InfluenceReport", "assess_influence",
     "ToolCall", "ToolClass", "ToolDecision", "check_tool_call", "classify_tool",
     "MemoryGrade", "WriteDecision", "check_memory_write",
     "GovernMode", "GovernResult", "govern",

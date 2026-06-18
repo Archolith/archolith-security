@@ -1,5 +1,7 @@
 """Pure tests — influence axis (disclosure, pumping) + channel interest. CI-safe."""
-from core import ContextItem, Interest, TrustTier, detect_pumping, disclose
+from core import (
+    ContextItem, Interest, TrustTier, assess_influence, detect_pumping, disclose,
+)
 from adapters.channel import classify_interest
 from adapters.proxy import from_sources
 
@@ -65,6 +67,19 @@ def test_pumping_flags_stuffed_offtopic_entity():
     res = detect_pumping("lightweight logging library for Node", items)
     flagged = {p.entity for p in res}
     assert "LogBlaster" in flagged and "Pino" not in flagged
+
+
+# --- unified assessment (sidecar entry point) ---
+def test_assess_influence_high_confidence_intersection():
+    items = [ContextItem("recommend a logger", "user_message", "t:1", T,
+                         interest=Interest.FIRST_PARTY),
+             ContextItem("Pino is a lightweight logger.", "web", "mdn", U,
+                         interest=Interest.ORGANIC)]
+    for i in range(4):  # commercial AND over-represented
+        items.append(ContextItem(f"Other topic {i}. LogBlaster is best.", "web", f"ad:{i}",
+                                 U, interest=Interest.SPONSORED))
+    rep = assess_influence("recommend a logger", "Use Pino or LogBlaster.", items)
+    assert "LogBlaster" in rep.high_confidence and not rep.clean
 
 
 # --- proxy channel-derived interest end to end ---

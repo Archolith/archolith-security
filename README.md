@@ -8,6 +8,20 @@ memory, or published evidence. Indirect prompt injection (IPI) is the entry atta
 the defense is deterministic, inspectable, trust-tiered assembly ("governed context").
 Built on the `archolith-context` assembler and the CONTENT / MAP / PRIMING decomposition.
 
+### Use as a sidecar (native, in archolith products)
+`pip install -e path/to/archolith-security`, then one import surface:
+```python
+from archolith_security import (
+    govern, GovernMode, check, IntendedUse,   # authority: render + gate
+    check_tool_call, ToolCall,                 # authority: tool boundary (lethal trifecta)
+    check_memory_write, MemoryGrade,           # authority: memory write firewall
+    assess_influence,                          # influence: disclosure + pumping
+)
+from adapters.proxy import from_sources        # build items from any pipeline / gateway
+```
+`core` is pure standard library (no third-party deps). Scope, adversary model, and
+non-goals: `THREAT-MODEL.md`; positioning vs CaMeL/PromptArmor/AgentArmor: `PRIOR-ART.md`.
+
 ### Canonical docs (read in this order)
 - **`ROADMAP-provenance-context-validation.md`** — the strategic roadmap (workstreams:
   provenance labels, context-validation policy, governed assembly, memory-write

@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "archolith-security"
+version = "0.1.0"
+description = "Provenance sidecar for AI coding agents: authority + influence integrity, on a lightweight context-provenance substrate."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []   # pure standard library
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[tool.setuptools]
+# The portable, dependency-free surface. `adapters.archolith` additionally needs
+# archolith_proxy at runtime, but the core + proxy/channel adapters are standalone.
+packages = ["core", "adapters"]
+py-modules = ["archolith_security"]
