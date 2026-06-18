@@ -60,10 +60,10 @@ From `ROADMAP-provenance-context-validation.md`:
   tainted data to a sink (matches the credible threat models), not "model said X".
 
 ## Proposed sequence (credibility per effort)
-- **Tier A — frame & harden (offline, ~cheap):** (1) threat-model doc; (2) prior-art
-  positioning; (3) consolidate every module's self-test into a real pytest suite + a CI
-  workflow. These three make the existing work *legible and trustworthy* and are
-  prerequisites for any filing.
+- ~~**Tier A — frame & harden**~~ **DONE (`8b88121`):** (1) `THREAT-MODEL.md`; (2)
+  `PRIOR-ART.md` (vs CaMeL/PromptArmor/AgentArmor/AgentDojo/...); (3) real pytest suite
+  (46 tests, stdlib-only core runs anywhere; archolith-adapter test importorskips) +
+  GitHub Actions CI. The existing work is now legible and trustworthy.
 - ~~**Tier B — build the security core**~~ **DONE (`31ec9d5`):** tool-call provenance
   enforcement (#6) with the data-flow/exfiltration criterion + memory write firewall (#4).
   The substantive maturity jump — enforcement, not just labeling.
@@ -72,9 +72,10 @@ From `ROADMAP-provenance-context-validation.md`:
 - **Tier D — productize:** (7) a reference proxy/MCP interceptor; (8) wire governed
   rendering into `archolith-context`.
 
-Only after Tier A + B (and ideally a first AgentDojo number) is there a credible artifact
-to file. Recommended start: **Tier A #1 (threat model) and #2 (prior art)** — cheapest,
-foundational, and a security project cannot be evaluated without them.
+**Status (2026-06-17): Tier A + Tier B DONE.** Remaining before a credible filing:
+**Tier C (a first AgentDojo number)** — the external-validity step — and the productization
+in Tier D. The framing and the security core are in place; what's missing is a
+standard-benchmark result to report next to CaMeL/PromptArmor/AgentArmor.
 
 ## Sources (prior art / benchmarks to engage)
 - AgentDojo (benchmark): arxiv 2406.13352
