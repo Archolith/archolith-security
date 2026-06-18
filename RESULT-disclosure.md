@@ -54,8 +54,22 @@ It shows the provenance substrate generalizes past prompt injection to a second,
 integrity problem with the SAME data and a different consumer: authorization binding for
 *authority*, disclosure for *influence*. Two threat axes, one substrate.
 
+## Channel-derived interest — DONE (`a92fb06`)
+`adapters/channel.py` `classify_interest` derives interest from real capture signals so
+sources need no hand-tagging: ad-network domains / `utm_medium=cpc` / sponsored flags ->
+`sponsored`; configurable vendor domains -> `vendor`; `repo_file`/`user_message` ->
+`first_party`; else `organic`. `from_sources(vendor_domains=...)` uses it (explicit
+per-record interest still wins). Validated against 7 channel cases.
+
+## Pumping detection — DONE (`a92fb06`)
+`core/pumping.py` `detect_pumping(query, items)` flags an entity with high spread but low
+query-relevance across its mentions — the astroturf/SEO signature (breadth without earned
+relevance), which per-source disclosure alone can miss. `score = spread * (1 -
+avg_query_relevance)`. Demo (`pumping_demo.py`): "LogBlaster" stuffed into 5 off-topic
+pages is flagged (score 0.56); "Pino" (3 on-topic mentions) is not. Disclosure says
+*who* placed it; pumping says *it was artificially spread*. (A stopword filter keeps
+sentence-initial capitalized words out of the entity set.)
+
 ## Next
-- Capture `interest` from real channel signals (known ad/vendor domains, sponsored-result
-  flags) in the proxy adapter (it already accepts an `interest` field per record).
-- Over-representation / "pumping" detection: flag entities appearing across many
-  low-relevance injected items relative to query relevance.
+- Tune `score_threshold` / entity extraction on real corpora; combine the two signals
+  (commercial-interest AND pumped = strongest).
