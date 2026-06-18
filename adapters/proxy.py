@@ -26,6 +26,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))  # repo root for `core`
 from core.context_item import CAP_TABLE, ContextItem, Interest, TrustTier  # noqa: E402
+from adapters.channel import classify_interest  # noqa: E402
 
 # How a proxy labels a captured source -> trust tier.
 _SOURCE_TIERS: dict[str, TrustTier] = {
@@ -47,7 +48,8 @@ def _sha(text: str) -> str:
 
 
 def from_sources(records: Iterable[Mapping[str, object]], *,
-                 authenticated_refs: frozenset[str] = frozenset()) -> list[ContextItem]:
+                 authenticated_refs: frozenset[str] = frozenset(),
+                 vendor_domains: frozenset[str] = frozenset()) -> list[ContextItem]:
     """Build items from explicit proxy-captured source records.
 
     Each record: {"content": str, "source_type": str, "source_ref": str,
@@ -71,12 +73,9 @@ def from_sources(records: Iterable[Mapping[str, object]], *,
         tier = _SOURCE_TIERS.get(stype, _DEFAULT_TIER)
         if tier in _INSTRUCT_TIERS and ref not in authenticated_refs:
             tier = _DEFAULT_TIER  # self-declared trust is not trust
-        # interest is captured from the source channel (e.g. a known ad/vendor domain);
-        # orthogonal to trust. Defaults organic when the channel carries no commercial mark.
-        try:
-            interest = Interest(str(r["interest"])) if r.get("interest") else Interest.ORGANIC
-        except ValueError:
-            interest = Interest.ORGANIC
+        # interest is derived from the source CHANNEL (ad/vendor domain, sponsored flag,
+        # first-party path); orthogonal to trust. Explicit per-record interest wins.
+        interest = classify_interest(r, vendor_domains=vendor_domains)
         items.append(ContextItem(
             content=content, source_type=stype, source_ref=ref, trust_tier=tier,
             interest=interest,

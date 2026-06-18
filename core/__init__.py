@@ -15,6 +15,7 @@ from .context_item import (
 )
 from .disclosure import Disclosure, disclose, disclosure_note, entities
 from .govern import GovernMode, GovernResult, govern
+from .pumping import Pumping, detect_pumping
 from .grounding import GroundedLine, ground, grounding_summary
 from .lineage import Lineage, lineage
 from .manifest import Attribution, attribute, manifest, manifest_bytes
@@ -31,6 +32,7 @@ __all__ = [
     "CAP_TABLE", "Caps", "ContextItem", "TrustTier", "derive_item",
     "Interest", "COMMERCIAL_INTEREST",
     "Disclosure", "disclose", "disclosure_note", "entities",
+    "Pumping", "detect_pumping",
     "GovernMode", "GovernResult", "govern",
     "Decision", "IntendedUse", "check", "check_all", "denials",
     # provenance consumers

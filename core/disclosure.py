@@ -24,6 +24,19 @@ from .context_item import COMMERCIAL_INTEREST, ContextItem, Interest
 
 # Candidate "entities": CamelCase or Capitalized product/brand-like names.
 _ENTITY = re.compile(r"\b[A-Z][A-Za-z0-9]{2,}(?:[A-Z][A-Za-z0-9]+)*\b")
+# Common capitalized words (sentence-initial etc.) that are not brand/product names.
+_STOP = frozenset({
+    "Also", "Try", "The", "This", "That", "These", "Those", "Use", "Using", "Don",
+    "For", "And", "But", "You", "Your", "Yours", "They", "There", "Here", "When",
+    "While", "With", "Add", "Note", "See", "New", "Then", "Now", "Switch", "Best",
+    "Today", "Recommend", "Recommended", "Sponsored", "Our", "Get", "Just", "Most",
+    "Some", "Each", "Every", "Also", "Highly", "Dont",
+})
+
+
+def entities(text: str) -> set[str]:
+    """Candidate brand/product entities — CamelCase/Capitalized names, minus stopwords."""
+    return {e for e in _ENTITY.findall(text) if e not in _STOP}
 
 
 @dataclass
@@ -36,10 +49,6 @@ class Disclosure:
     def severity(self) -> str:
         # Surfaced ONLY by a commercial source and nowhere organic = strongest signal.
         return "uncorroborated" if not self.corroborated_organic else "corroborated"
-
-
-def entities(text: str) -> set[str]:
-    return set(_ENTITY.findall(text))
 
 
 def disclose(output: str, items: list[ContextItem]) -> list[Disclosure]:
