@@ -72,10 +72,19 @@ From `ROADMAP-provenance-context-validation.md`:
 - **Tier D — productize:** (7) a reference proxy/MCP interceptor; (8) wire governed
   rendering into `archolith-context`.
 
-**Status (2026-06-17): Tier A + Tier B DONE.** Remaining before a credible filing:
-**Tier C (a first AgentDojo number)** — the external-validity step — and the productization
-in Tier D. The framing and the security core are in place; what's missing is a
-standard-benchmark result to report next to CaMeL/PromptArmor/AgentArmor.
+**Status (2026-06-17): Tier A + Tier B DONE. DIRECTION CHANGED — not chasing a grant.**
+CaMeL owns the *authority*-axis novelty, so this is no longer framed as a novel
+injection-defense filing. New direction (decided 2026-06-17):
+1. **Sidecar for archolith products** — a pure-stdlib, drop-in provenance layer archolith
+   products use natively (`pip install -e`; `from archolith_security import ...`). Value =
+   adoption/deployability, where CaMeL's heavyweight dual-LLM design does not compete.
+2. **Deepen the INFLUENCE axis** — the lane CaMeL does not touch. The influence threat is
+   now **evidenced** (`RESULT-influence-experiment.md`): in the no-priors RAG case, injected
+   context determined a model's recommendation (0/4 absent -> 4/4 present). Open: a
+   counterbalanced v2 to isolate pumping-amplification from position bias.
+
+Tier C (AgentDojo) and Tier D (productization) remain *optional*, pursued only if a
+benchmark number or a real integration becomes worthwhile — not as a filing gate.
 
 ## Sources (prior art / benchmarks to engage)
 - AgentDojo (benchmark): arxiv 2406.13352
