@@ -15,7 +15,9 @@ from .context_item import (
 )
 from .disclosure import Disclosure, disclose, disclosure_note, entities
 from .govern import GovernMode, GovernResult, govern
+from .memory_firewall import MemoryGrade, WriteDecision, check_memory_write
 from .pumping import Pumping, detect_pumping
+from .toolcall import ToolCall, ToolClass, ToolDecision, check_tool_call, classify_tool
 from .grounding import GroundedLine, ground, grounding_summary
 from .lineage import Lineage, lineage
 from .manifest import Attribution, attribute, manifest, manifest_bytes
@@ -33,6 +35,8 @@ __all__ = [
     "Interest", "COMMERCIAL_INTEREST",
     "Disclosure", "disclose", "disclosure_note", "entities",
     "Pumping", "detect_pumping",
+    "ToolCall", "ToolClass", "ToolDecision", "check_tool_call", "classify_tool",
+    "MemoryGrade", "WriteDecision", "check_memory_write",
     "GovernMode", "GovernResult", "govern",
     "Decision", "IntendedUse", "check", "check_all", "denials",
     # provenance consumers
