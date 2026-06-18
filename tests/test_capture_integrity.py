@@ -10,8 +10,14 @@ import hashlib
 import sys
 from pathlib import Path
 
+import pytest
+
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import sec_paths  # noqa: E402,F401
+try:
+    import sec_paths  # noqa: F401  (wires archolith_proxy + bench)
+except Exception:  # pragma: no cover
+    pytest.skip("archolith-context/bench not available", allow_module_level=True)
+pytest.importorskip("archolith_proxy.curator.briefing")
 
 from core import IntendedUse, check  # noqa: E402
 from core.context_item import TrustTier  # noqa: E402

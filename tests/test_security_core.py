@@ -8,7 +8,6 @@ import sys
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
-import sec_paths  # noqa: E402,F401
 
 from core import (  # noqa: E402
     MemoryGrade, ToolCall, check_memory_write, check_tool_call, derive_item,
