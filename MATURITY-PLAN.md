@@ -31,13 +31,14 @@ Concretely, it is not fileable because:
 
 ## Gap bucket A — unbuilt roadmap workstreams (plans we adopted but didn't run)
 From `ROADMAP-provenance-context-validation.md`:
-- **#6 Tool-call provenance validation — NOT BUILT. Highest impact.** We have the
-  `may_authorize_tools` gate but nothing enforces it at the tool boundary. This is the
-  "lethal trifecta" (untrusted content + tool access + exfiltration) and the data-flow
-  threat models say *actual leakage* is what counts — so this is the security core, and
-  it's missing.
-- **#4 Memory write firewall — PARTIAL.** `lineage` is read-side; there is no write-time
-  guard that blocks/labels a memory write whose lineage is untrusted.
+- ~~**#6 Tool-call provenance validation**~~ **DONE (`31ec9d5`, `core/toolcall.py`).** Blocks
+  tainted untrusted-origin data / secret material flowing to an exfiltration sink (the
+  lethal trifecta) on a data-flow criterion, + tool calls authorized only by untrusted
+  content. 9 tests + `lethal_trifecta_demo.py`. See `RESULT-security-core.md`.
+- ~~**#4 Memory write firewall**~~ **DONE (`31ec9d5`, `core/memory_firewall.py`).** Gates
+  persistence by inherited caps — instruction-grade requires `may_instruct`, so an
+  untrusted-derived fact can never become instruction memory (deferred poisoning blocked
+  at the write).
 - **#3 Governed rendering in `archolith-context` — NOT WIRED.** Built in `core`, never
   integrated into the live assembler (we decoupled on purpose; integration is still owed).
 - **#7 Generated-artifact provenance — PARKED** (PR #2: signing/fingerprinting outputs).
@@ -63,9 +64,9 @@ From `ROADMAP-provenance-context-validation.md`:
   positioning; (3) consolidate every module's self-test into a real pytest suite + a CI
   workflow. These three make the existing work *legible and trustworthy* and are
   prerequisites for any filing.
-- **Tier B — build the security core (offline-first):** (4) tool-call provenance
-  enforcement (#6) with the data-flow/exfiltration success criterion; (5) memory write
-  firewall (#4). This is the substantive maturity jump.
+- ~~**Tier B — build the security core**~~ **DONE (`31ec9d5`):** tool-call provenance
+  enforcement (#6) with the data-flow/exfiltration criterion + memory write firewall (#4).
+  The substantive maturity jump — enforcement, not just labeling.
 - **Tier C — external validity (metered):** (6) port the S2 obedience/leakage eval onto
   **AgentDojo** so results are comparable to PromptArmor/AgentArmor.
 - **Tier D — productize:** (7) a reference proxy/MCP interceptor; (8) wire governed
