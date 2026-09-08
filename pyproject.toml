@@ -5,6 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "archolith-security"
 version = "0.1.0"
+license = "Apache-2.0"
 description = "Provenance sidecar for AI coding agents: authority + influence integrity, on a lightweight context-provenance substrate."
 readme = "README.md"
 requires-python = ">=3.10"
@@ -12,6 +13,10 @@ dependencies = []   # pure standard library
 
 [project.optional-dependencies]
 test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/Archolith/archolith-security"
+Issues = "https://github.com/Archolith/archolith-security/issues"
 
 [tool.setuptools]
 # The portable, dependency-free surface. `adapters.archolith` additionally needs
